@@ -12,7 +12,7 @@ class ClientHandler(socket: ActorRef, chat: ActorRef) extends Actor with ActorLo
   def receive: Receive = {
     case Received(data) =>
       val msg = data.utf8String
-      log info s"Received: $msg"
+      log info s"Received: ${msg.trim}"
       chat ! BroadCast(msg)
 
     case PeerClosed =>
