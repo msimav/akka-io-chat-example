@@ -3,12 +3,11 @@ import akka.io.Tcp.{Write, Received, PeerClosed}
 import akka.util.ByteString
 
 object ClientHandler {
-  def props(socket: ActorRef): Props = Props(classOf[ClientHandler], socket)
+  def props(socket: ActorRef, chat: ActorRef): Props = Props(classOf[ClientHandler], socket, chat)
 }
 
-class ClientHandler(socket: ActorRef) extends Actor with ActorLogging{
+class ClientHandler(socket: ActorRef, chat: ActorRef) extends Actor with ActorLogging {
   import Chat._
-  import context.system
 
   def receive: Receive = {
     case Received(data) =>

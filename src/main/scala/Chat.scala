@@ -3,14 +3,6 @@ import akka.actor.{ActorSystem, ActorRef, Actor, Props}
 object Chat {
   def props: Props = Props[Chat]
 
-  // TODO: Think better implementation
-  var _chat: Option[ActorRef] = None
-  def chat(implicit system: ActorSystem) = _chat getOrElse {
-    val ref = system actorOf props
-    _chat = Some(ref)
-    ref
-  }
-
   sealed trait ChatProtocol
   case class Register(client: ActorRef) extends ChatProtocol
   case class UnRegister(client: ActorRef) extends ChatProtocol

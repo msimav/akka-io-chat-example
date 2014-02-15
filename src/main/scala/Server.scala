@@ -1,12 +1,12 @@
-import akka.actor.{ActorLogging, Actor, Props}
+import akka.actor.{ActorRef, ActorLogging, Actor, Props}
 import akka.io.{ IO, Tcp }
 import java.net.InetSocketAddress
 
 object Server {
-  def props(port: Int): Props = Props(classOf[Server], port)
+  def props(port: Int, chat: ActorRef): Props = Props(classOf[Server], port, chat)
 }
 
-class Server(port: Int) extends Actor with ActorLogging {
+class Server(port: Int, chat: ActorRef) extends Actor with ActorLogging {
   import Tcp._
   import context.system
 
@@ -24,8 +24,8 @@ class Server(port: Int) extends Actor with ActorLogging {
 
     case c @ Connected(remote, _) =>
       log info s"Client Connected: $remote"
-      val handler = context actorOf ClientHandler.props(sender)
+      val handler = context actorOf ClientHandler.props(sender, chat)
       sender ! Register(handler)
-      Chat.chat ! Chat.Register(handler)
+      chat ! Chat.Register(handler)
   }
 }
